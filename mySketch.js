@@ -1,3 +1,10 @@
+//background
+var Unit;
+var Counter;
+var MX, MY;
+var x,y,size;
+
+
 
 var vx =0;
 
@@ -8,7 +15,7 @@ let theShader;
 let WebglGraphics;
 let info=[];
 
-var x = 0;
+//var x = 0;
 let bg;
 
 const maxXChange = 125;
@@ -62,9 +69,12 @@ function setup() {
 	
 	historygram = createGraphics(windowWidth*5,height);
 	mic.play();
-	
 	fft = new p5.FFT(0.0, 8192);
 	mic.connect(fft);
+
+	// bg	
+	Unit=128;
+	Counter=0;
 
 
 	
@@ -72,25 +82,29 @@ function setup() {
 
 
 function draw() {
+	background(dark);
+	Counter+=0.002;
+	for (let j=0; j<height; j+=Unit) {
+   for (let i=0; i<width; i+=Unit) {
+	 DrawRect(i, j, Unit);
+		   
+   }
+ }
+   
 
 
 
-	vx=vx+7.5;
+	vx=vx+5;
 	
-	light.blend(dark,0,0,33,100,67,0,33,100,DARKEST);
-	image(light,0,0);
-	image(dark,0,0);
 	
-	//background(bg);
+
 	
 	spectrum = fft.analyze();
 	
 
-		
 
 	//DRAW HISTORYGRAM
 	//TRANSLATE
-	
 	
 	
 	//historygram.image(historygram, -2,0);
@@ -103,6 +117,12 @@ function draw() {
 		
 		if(intensity>220){
 		historygram.stroke(255-intensity,255-intensity,255-intensity);
+
+		if(frameCount==100){
+			console.log(vx);
+		}
+
+		
 	//	var weight = map(intensity,0,255,0.5,2);
 	//	historygram.strokeWeight(weight);
 		let y = index / (maxFreq - minFreq - 1) * height;
@@ -120,7 +140,7 @@ function draw() {
 	}
 
 	image(historygram, windowWidth-vx,0);
-	x= x -2;
+//	x= x -2;
 	//drawStreak();
 	
 	
@@ -134,6 +154,7 @@ function draw() {
 		// info text
 	textSize(18);
 	textFont(enFont);
+	fill(255);
 	text("2020-12-30--10-12-11--593_pX.fots",1/25*width,15/20*height);
 	textSize(18);
 	text("age:2s",1/25*width,16/20*height);
@@ -170,6 +191,7 @@ function draw() {
 }
 
 
+
 function drawStreak() {
 	let y = floor(random(height));
 	let h = floor(random(20, 30)); //floor(random(1, 100));
@@ -192,10 +214,29 @@ function drawStreak() {
 	//copy(img, 0, y, img.width, h, xChange - maxXChange, -maxYChange + y + yChange, img.width, h);
 }
 
-
-
-
-
+function DrawRect(x, y, size){
+	let cx=x+size/2; 
+	let cy=y+size/2;
+	let n=noise(cx/width, cy/height, mag(cx, cy)/height-Counter);
+	let threshold=map(size, Unit, 4, 0.5, 0.09 );
+		if (abs(n-0.5)>threshold) {
+	   rect(x, y, size, size);
+	   fill(205,207,195);
+	   noStroke();
+	 } else {
+	   size=size/2;
+	   if (size>=4) { // smallest size of a square = 4pixels
+		 DrawRect(x     , y     , size);
+		 DrawRect(x+size, y     , size);
+		 DrawRect(x     , y+size, size);
+		 DrawRect(x+size, y+size, size);
+		fill(205,207,195);
+		noStroke();
+	   }
+	 }
+   }
+   
+   
 
 
 
