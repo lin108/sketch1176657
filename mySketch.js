@@ -52,7 +52,7 @@ let chFont;
 
 
 function preload(){
-mic= loadSound("noise.mp3");
+
 light=loadImage("light.jpg");
 dark=loadImage("dark.jpg");
 enFont=loadFont('Font/Menlo-Regular.ttf');
@@ -63,12 +63,12 @@ chFont=loadFont("Font/I.BMing-3.500.ttf");
 }
 
 function setup() {
-
+	mic= loadSound("noise.mp3");
 	
 	createCanvas(windowWidth, windowHeight);
 	
 	historygram = createGraphics(windowWidth*5,height);
-	mic.play();
+//	mic.play();
 	fft = new p5.FFT(0.0, 8192);
 	mic.connect(fft);
 
@@ -113,9 +113,9 @@ function draw() {
 	for (let i = maxFreq; i >= minFreq; i--) {
 	 //historygram.translate(5-x,0);
 		let index = i - minFreq;
-		let intensity = (spectrum[i] - spectrum[400])*2  ;
+		let intensity = (spectrum[i] - spectrum[400])*3  ;
 		
-		if(intensity>220){
+		if(intensity>150){
 		historygram.stroke(255-intensity,255-intensity,255-intensity);
 
 		if(frameCount==100){
@@ -237,6 +237,16 @@ function DrawRect(x, y, size){
    }
    
    
+
+   function mousePressed() {
+	if (mic.isPlaying()) {
+	  // .isPlaying() returns a boolean
+	  mic.stop();
+	} else {
+	  mic.play();
+	  mic.amp(1);
+	}
+  }
 
 
 
