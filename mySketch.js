@@ -113,9 +113,9 @@ function draw() {
 	for (let i = maxFreq; i >= minFreq; i--) {
 	 //historygram.translate(5-x,0);
 		let index = i - minFreq;
-		let intensity = (spectrum[i] - spectrum[400])*3  ;
+		let intensity = (spectrum[i] - spectrum[400])*2  ;
 		
-		if(intensity>150){
+		if(intensity>180){
 		historygram.stroke(255-intensity,255-intensity,255-intensity);
 
 		if(frameCount==100){
